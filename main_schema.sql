@@ -1,23 +1,24 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE departments (
+CREATE TABLE IF NOT EXISTS departments (
 	id UUID DEFAULT uuid_generate_v4() PRIMARY KEY
-	, name VARCHAR(255)
-	, type VARCHAR(255)
+	, name VARCHAR(255) NOT NULL
+	, type VARCHAR(255) NOT NULL
 	, created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
 	, updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
+	, CONSTRAINT department_name_unique UNIQUE (name)
 );
 
-CREATE TABLE employees (
+CREATE TABLE IF NOT EXISTS employees (
 	id UUID DEFAULT uuid_generate_v4() PRIMARY KEY
 	, manager_id UUID
 	, department_id UUID
-	, first_name VARCHAR(24)
-	, last_name VARCHAR(24)
+	, first_name VARCHAR(24) NOT NULL
+	, last_name VARCHAR(24) NOT NULL
 	, phone VARCHAR(15)
-	, email VARCHAR(100)
+	, email VARCHAR(100) NOT NULL
 	, salary MONEY
-	, dob TIMESTAMP WITHOUT TIME ZONE
+	, dob TIMESTAMP WITHOUT TIME ZONE NOT NULL
 	, created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
 	, updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
 	, CONSTRAINT fk_manager_id
@@ -28,4 +29,5 @@ CREATE TABLE employees (
 		FOREIGN KEY(department_id)
 		REFERENCES departments(id)
 		ON DELETE SET NULL
+	, CONSTRAINT employee_email_unique UNIQUE (email)
 );
